@@ -1,0 +1,71 @@
+/* ============================================================
+ *  ESP32 AUDIT — Wireless Security Audit Framework
+ *  Target : ESP32 / ESP32-WROOM-32 / ESP32-WROVER
+ *  Author : built for Arduino-ESP32 core 2.0.x
+ *  Deps   : ESPAsyncWebServer, AsyncTCP, ArduinoJson 6,
+ *           BLE (bundled), SD, LittleFS, DNSServer
+ * ============================================================ */
+#include "config.h"
+#include "types.h"
+#include "terminal.h"
+#include "storage.h"
+#include "wifi_engine.h"
+#include "attacks.h"
+#include "ble_engine.h"
+#include "net_tools.h"
+#include "webui.h"
+
+static uint32_t s_lastBtn = 0;
+static bool     s_btnPrev = true;
+
+void setup() {
+  Serial.begin(115200);
+  delay(250);
+
+  termInit();
+  termLog(LVL_INFO, "==================================");
+  termLog(LVL_INFO, " %s  v%s", FW_NAME, FW_VERSION);
+  termLog(LVL_INFO, " build %s", FW_BUILD);
+  termLog(LVL_INFO, "==================================");
+
+  pinMode(LED_PIN, OUTPUT);
+  pinMode(BTN_PIN, INPUT_PULLUP);
+  digitalWrite(LED_PIN, LOW);
+
+  storageInit();
+  wifiEngineInit();
+  attacksInit();
+  bleInit();
+  netInit();
+  webInit();
+
+  termLog(LVL_OK, "System UI Initialized.");
+  termLog(LVL_OK, "Ready.");
+}
+
+void loop() {
+  wifiEngineTick();
+  attacksTick();
+  bleTick();
+  netTick();
+  webTick();
+
+  /* BOOT button: short press = clear packets, long press = reboot */
+  bool b = digitalRead(BTN_PIN);
+  if (!b && s_btnPrev) s_lastBtn = millis();
+  if (b && !s_btnPrev) {
+    uint32_t held = millis() - s_lastBtn;
+    if (held > 2500) { termLog(LVL_WARN, "Button: reboot"); delay(100); ESP.restart(); }
+    else if (held > 40) { snifferClear(); }
+  }
+  s_btnPrev = b;
+
+  /* heartbeat LED */
+  static uint32_t hb = 0;
+  if (millis() - hb > (snifferRunning() ? 120 : 900)) {
+    hb = millis();
+    digitalWrite(LED_PIN, !digitalRead(LED_PIN));
+  }
+
+  vTaskDelay(pdMS_TO_TICKS(5));
+}

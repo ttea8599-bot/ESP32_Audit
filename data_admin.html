@@ -1,0 +1,51 @@
+
+<div id="app">
+
+  <aside class="sidebar">
+    <div class="brand"><span class="logo">◈</span> ESP32 AUDIT</div>
+    <nav>
+      <p class="grp">DASHBOARD</p>
+      <a data-v="dashboard"><i>⌂</i> Status Overview</a>
+
+      <p class="grp">WIFI MODULES</p>
+      <a data-v="analyzer"><i>◎</i> Packet Analyzer</a>
+      <a data-v="scanner"><i>▼</i> Scanner &amp; Sniff</a>
+      <a data-v="recon"><i>◐</i> Recon (Airodump)</a>
+      <a data-v="eviltwin"><i>◍</i> Evil Twin Attack</a>
+      <a data-v="karma"><i>◉</i> Karma Attack</a>
+      <a data-v="deauther"><i>∅</i> Deauther</a>
+
+      <p class="grp">BLUETOOTH MODULES</p>
+      <a data-v="blesniff"><i>ᛒ</i> BLE Sniffer</a>
+      <a data-v="blespam"><i>ᛉ</i> BLE Spam Attack</a>
+
+      <p class="grp">NETWORK ANALYSIS</p>
+      <a data-v="target"><i>⌁</i> Target Connection</a>
+      <a data-v="hostdisc"><i>⚇</i> Host Discovery</a>
+      <a data-v="portscan"><i>▢</i> Port Scanner</a>
+
+      <p class="grp">SYSTEM</p>
+      <a data-v="handshake"><i>🔒</i> Captured Handshake</a>
+      <a data-v="creds"><i>🔑</i> Captured Creds</a>
+      <a data-v="config"><i>⚙</i> Configuration</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <h1>Status Overview</h1>
+      <div class="stats">
+        <span class="pill">UPTIME <b id="uptime">00:00:00</b></span>
+        <span class="pill">RAM <b id="ram">--%</b></span>
+        <span class="pill" id="sdpill">SD <b id="sd">--</b></span>
+      </div>
+    </header>
+
+    <section class="content" id="view"></section>
+
+    <div class="term" id="term"></div>
+  </main>
+</div>
+
+
+
