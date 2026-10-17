@@ -21,13 +21,18 @@ jobs:
             https://espressif.github.io/arduino-esp32/package_esp32_index.json
           arduino-cli core update-index
           arduino-cli core install esp32:esp32
-
-      - name: Install libraries
+          
+      - name: Install AsyncTCP
         run: |
-          arduino-cli lib install "ArduinoJson"
-          arduino-cli lib install --git-url https://github.com/ESP32Async/AsyncTCP
-          arduino-cli lib install --git-url https://github.com/ESP32Async/ESPAsyncWebServer
+          git clone --depth 1 https://github.com/ESP32Async/AsyncTCP.git /tmp/AsyncTCP
+          mkdir -p "$HOME/Arduino/libraries/AsyncTCP"
+          cp -r /tmp/AsyncTCP/src "$HOME/Arduino/libraries/AsyncTCP/"
 
+      - name: Install ESPAsyncWebServer
+        run: |
+          git clone --depth 1 https://github.com/ESP32Async/ESPAsyncWebServer.git /tmp/ESPAsyncWebServer
+          mkdir -p "$HOME/Arduino/libraries/ESPAsyncWebServer"
+          cp -r /tmp/ESPAsyncWebServer/src "$HOME/Arduino/libraries/ESPAsyncWebServer/"
       - name: Embed web assets into firmware
         run: python3 tools/embed_assets.py
 
